@@ -1,0 +1,182 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Learn Reactive Extensions</title>
+        <link rel="stylesheet" href="../Content/bootstrap-custom.min.css" type="text/css" />
+        <link rel="stylesheet" href="../Content/bootstrap-theme.min.css" type="text/css" />
+        <link rel="stylesheet" href="../app.css" type="text/css" />
+    </head>
+<body>
+    <div class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <div class="navbar-brand"><a href="/index.html">Reactive Extensions学習ノート</a></div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+
+        <div class="page-header" id="banner">
+            <div class="row">
+                <div class="col-lg-8 col-md-7 col-sm-6">
+                    <h1>Rxを使うべき場所</h1>
+                    <p class="lead">Rx勉強会</p>
+                </div>
+            </div>
+        </div>
+
+        <h2>資料</h2>
+        <h3><a href="https://github.com/Reactive-Extensions/RxJS/tree/master/doc/designguidelines#2-when-to-use-rxjs">RxJSデザインガイドライン</a></h3>
+
+        <h2>RxJSデザインガイドラインの"2. When to Use RxJS"の訳"</h2>
+        <h3>2.1 RxJS活用ケース: 非同期・イベントベースの処理を統合・編集するとき</h3>
+        
+        <p>複数のイベントや非同期処理を扱うコードは、処理の順番を扱うために状態マシンを定義する必要があり、その結果コードがすぐに複雑になってしまいます。<br />
+            加えて、そのコードはそれぞれの処理について成功や失敗を扱う必要があります。<br />
+            これらの処理は通常の制御フローとは違う処理になり、理解とメンテナンスが難しいコードが生まれてしまいます</p>
+        
+        <p>RxJSはそれらの計算を扱うのに最高のライブラリとなります。<br />
+            RxJSは、これらの非同期の計算を扱うための読みやすく、かつ統合・編集しやすいAPIを提供します</p>
+
+        <h4>Sample</h4>
+        
+        <pre>
+var input = document.getElementById('input');
+var dictionarySuggest = Rx.Observable.fromEvent(input, 'keyup')
+  .map(function () { return input.value; })
+  .filter(function (text) { return !!text; })
+  .distinctUntilChanged()
+  .throttle(250)
+  .flatMapLatest(searchWikipedia)
+  .subscribe(
+    function (results) {
+      list = [];
+      list.concat(results.map(createItem));
+    },
+    function (err) {
+      logError(err);
+    }
+  );
+</pre>
+
+        <p>このサンプルは、一般的なUIで使われるユーザーの入力に合わせてサジェストする機能の実装例です</p>
+
+        <p>RxJSは既存の<code>keyup</code>イベントからObservableシーケンスを作成します</p>
+        
+        <p>そして、このイベント(訳注: Observableシーケンスのこと)を前回と違う値が来た時だけ発火するように、フィルターや変換をシーケンスに重ねていきます
+            (<code>keyup</code>イベントはキーを打つすべてのタイミングで作動します。つまり、←や→キーをおしてカーソルを動かし、入力テキストが変化しないケースも含みます)</p>
+        
+        <p>次に、<code>throttle</code>オペレータを使い、直前のイベントから250ms経過しないと発動しないようにします
+            (ユーザーがタイプ中は、サジェストを探索してもすぐに捨てられるため、探索する高コストな処理を省きます)</p>
+        
+        <p>今までの書き方では、throttle相当の処理をタイマーのコールバックで実装していました。<br />
+            このタイマーは例外を飛ばす可能性があります(幾つかのタイマーは実行数に制限がある)(訳注: この文どう考えても蛇足な気が)</p>
+
+        <p>ユーザーの入力イベントがフィルタリングされたら、次に辞書の探索を開始します。<br />
+            これらの処理は一般的に重たい処理となります(別の環境にあるサーバにリクエストを投げる等)。この処理も非同期で行います</p>
+
+        <p><code>flatMap</code>/<code>selectMany</code>は複数の非同期ストリームを結合するのに役立ちます。<br />
+            この結合は各ストリームの成功だけではなく、例外(訳注: onErrorのこと)も同様に結合されます</p>
+        
+        <p>今までの書き方では、複数のコールバックを用意して、各コールバック内で例外処理を行っていました</p>
+
+        <p>もし、辞書探索中にユーザーが新たなキー入力を行った場合、辞書探索の結果はもはや見る必要はありません。<br />
+            ユーザーがより長い単語をタイプ中に古いサジェスト結果を見るのは混乱の元だからです</p>
+        
+        <p><code>flatMapLatest</code>オペレータは新しい<code>keyup</code>イベントを検知したら辞書の処理を無視するように働きます</p>
+
+        <p>
+            最終的な処理の結果のObervableを<code>subscribe</code>します。<code>subscribe</code>に渡した2つの関数は、以下の時のみ実行されます。<br />
+            <ol>
+                <li>計算した結果(訳注: 上記の処理の結果であるサジェスト結果)を受け取った時</li>
+                <li>計算途中で何らかの例外が発生した時</li>
+            </ol>
+        </p>
+
+        <h4>
+            このガイドラインを無視するケース
+        </h4>
+        
+        <p>対象のアプリケーション/ライブラリ中に含まれる非同期/イベントベースの処理が少ない、またはそれらの処理を統合・編集する処理が少なく、
+            RxJSのコスト(学習コスト及びRxJSライブラリ再配布コスト)が自前で実装するコストよりも重たくなる場合</p>
+
+        <h3>
+            2.2 非同期シーケンスでのRxJSの利用
+        </h3>
+        
+        <p>いくつかの既存のライブラリはJavaScriptエコシステムに非同期処理をサポートします。<br />
+            これらのライブラリは強力ですが、一つのメッセージを返すことに最適化されています。<br />
+            そして、大抵のライブラリは非同期処理中に複数のメッセージを結果として送信することはサポートしていません</p>
+        
+        <p>RxJsのメッセージングは以下の形で表されます: <code>onNext</code>* (<code>onCompleted</code>|<code>onError</code>)?<br />
+            つまり、RxJsは終了までに複数のメッセージを送信できます。このことはRxJSは一つのメッセージを返すのと、２つ以上のメッセージを返すのとの両方の処理に適切に利用可能であることを示しています</p>
+        
+        <pre>var fs = require('fs');
+var Rx = require('rx');
+// Read/write from stream implementation
+function readAsync(fd, chunkSize) { /* impl */ }
+function appendAsync(fd, buffer) { /* impl */ }
+function encrypt(buffer) { /* impl */}
+//open a 4GB file for asynchronous reading in blocks of 64K
+var inFile = fs.openSync('4GBfile.txt', 'r+');
+var outFile = fs.openSync('Encrypted.txt', 'w+');
+readAsync(inFile, 2 << 15)
+  .map(encrypt)
+  .flatMap(function (data) {
+    return appendAsync(outFile, data);
+  })
+  .subscribe(
+    function () { },
+    function (err) {
+      console.log('An error occurred while encrypting the file: %s', err.message);
+      fs.closeSync(inFile);
+      fs.closeSync(outFile);
+    },
+    function () {
+      console.log('Successfully encrypted the file.');
+      fs.closeSync(inFile);
+      fs.closeSync(outFile);
+    }
+  );</pre>
+        
+        <p>このサンプルでは、4GBのファイルをすべて読み込み、暗号化して他のファイルに保存しています</p>
+        
+        <p>ファイルのすべてを読み込んで、暗号化してすべてを書き出すのは高コストな処理になるでしょう</p>
+        
+        <p>代わりに、RxJSが複数のメッセージを扱えるという点を利用します。</p>
+        
+        <p>ファイルを64Kブロックごとに非同期で読み取ります。読み取りの結果、byte配列のobervableシーケンスができます。<br />
+            次に各ブロックをそれぞれ暗号化します(このサンプルではファイルの部分部分を暗号化できると仮定します)。<br />
+            ブロックの暗号化が終了すると、即座に次の他のファイルに保存するパイプラインに送信されます。
+            <code>appendAsync</code>は複数のメッセージを処理できる非同期処理です(訳注: ここで先ほど送信された暗号化済みメッセージが保存される)</p>
+
+        <h4>
+            このガイドラインを無視するケース
+        </h4>
+        
+        <p>
+            対象のアプリケーション/ライブラリ中に複数のメッセージを処理するケースが少なく、
+            RxJSのコスト(学習コスト及びRxJSライブラリ再配布コスト)が自前で実装するコストよりも重たくなる場合
+        </p>
+        
+        <h2>その他のRxを使うケース</h2>
+        <ul>
+            <li>言語や環境の制限により、Promise、イベント、非同期処理が利用できない/非常に貧弱な場合の代用として</li>
+            <li>複雑な時間軸に関するドメインロジックの表現のために利用</li>
+            <li>イベントの合成が絡んでくるケース</li>
+        </ul>
+        <h2>Rxを使うべきでないケース</h2>
+        <ul>
+            <li>非同期やイベント駆動をほとんど使わない場合</li>
+            <li>Rx学習コストがコーディング内容に見合わない場合</li>
+        </ul>
+    </div>
+    <footer class="modal-footer" style="margin-top:100px;">
+        <p>Rx勉強会</p>
+    </footer>
+
+</body>
+</html>

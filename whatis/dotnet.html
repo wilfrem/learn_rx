@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learn Reactive Extensions</title>
+    <link rel="stylesheet" href="../Content/bootstrap-custom.min.css" type="text/css" />
+    <link rel="stylesheet" href="../Content/bootstrap-theme.min.css" type="text/css" />
+    <link rel="stylesheet" href="../app.css" type="text/css" />
+</head>
+<body>
+    <div class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <div class="navbar-brand"><a href="/index.html">Reactive Extensions学習ノート</a></div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+
+        <div class="page-header" id="banner">
+            <div class="row">
+                <div class="col-lg-8 col-md-7 col-sm-6">
+                    <h1>.NET/Unity向け説明</h1>
+                    <p class="lead">Rx勉強会</p>
+                </div>
+            </div>
+        </div>
+        
+        <h2>各種参考になる資料</h2>
+        <h3>Unity向けのイントロ用スライド</h3>
+        <iframe src="//www.slideshare.net/slideshow/embed_code/42439258" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:1px solid #CCC; border-width:1px; margin-bottom:5px; max-width: 100%;" allowfullscreen> </iframe> <div style="margin-bottom:5px"> <strong> <a href="//www.slideshare.net/wilfrem/unirx-reactive-extensions-inside" title="UniRx勉強会 reactive extensions inside(公開用)" target="_blank">UniRx勉強会 reactive extensions inside(公開用)</a> </strong> from <strong><a href="//www.slideshare.net/wilfrem" target="_blank">wilfrem</a></strong> </div>
+        <h3><a href="http://www.atmarkit.co.jp/fdotnet/introrx/introrx_01/introrx_01_01.html">Rx入門の資料</a></h3>
+        
+        <h2>.NETプログラマーにとってRxとは何なのか？</h2>
+        <ul>
+            <li>RxとはC#のLINQを時間軸に拡張したものである。</li>
+            <li>イテレータIEnumerable&lt;T&gt;を実装しているものをすべてLINQで扱えるように、時間軸上に存在する物をIObservable&lt;T&gt;で表し、このインターフェイスをすべてLINQで扱える。</li>
+            <li>eventやTaskの上位互換としてIObservable&lt;T&gt;が存在し、しかもそれに変換可能</li>
+        </ul>
+        
+        <h2>我々にとってRxとは何か？</h2>
+        <div>時間軸が関連する複雑なドメインを簡潔にコードで表現できる(どう処理するのかではなく、何をしたいのかを書くことになるから)</div>
+
+        <h2>重要なポイント</h2>
+        <ul>
+            <li>Rx(IObservable)はLINQを時間軸に拡張したものである</li>
+            <li>Rxはevent、Taskの上位互換で変換可能</li>
+            <li>時間軸が関連する複雑なドメインを簡潔にコードで表現できる</li>
+        </ul>
+    </div>
+    <footer class="modal-footer" style="margin-top:100px;">
+        <p>Rx勉強会</p>
+    </footer>
+
+</body>
+</html>

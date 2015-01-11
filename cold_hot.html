@@ -1,0 +1,102 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learn Reactive Extensions</title>
+    <link rel="stylesheet" href="Content/bootstrap-custom.min.css" type="text/css" />
+    <link rel="stylesheet" href="Content/bootstrap-theme.min.css" type="text/css" />
+    <link rel="stylesheet" href="app.css" type="text/css" />
+</head>
+<body>
+    <div class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <div class="navbar-brand"><a href="/index.html">Reactive Extensions学習ノート</a></div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+
+        <div class="page-header" id="banner">
+            <div class="row">
+                <div class="col-lg-8 col-md-7 col-sm-6">
+                    <h1>Observableの分岐について、あるいはCold/Hotについて</h1>
+                    <p class="lead">Rx勉強会</p>
+                </div>
+            </div>
+        </div>
+        
+        <h2>問題</h2>
+        <p>以下のコードを実行するとside effectは何回表示されるか？</p>
+        <pre>
+var source = new Rx.Subject&lt;number&gt;();
+var stream = source.do(i => console.log("side effect"));
+    
+stream.subscribeOnNext(i => console.log("child1: " + i));
+source.onNext(1);
+stream.subscribeOnNext(i => console.log("child2: " + i));
+source.onNext(2);
+        </pre>
+        
+        <h2>答え</h2>
+        <p> 3回</p>
+        
+        <h2>なぜ2回ではないのか？</h2>
+        
+        <p>Rxでは基本的にオペレータをつないだ時にストリームの接続が適用されるのではなく、Subscribeした時に初めて接続が適用される</p>
+        <p>つまり、上記コードでいえば、streamというのは「sourceにdoオペレータを噛まします」という設計だけが保持されている状態で、<br />
+            実際に接続されるのはsubscribeした時。<br />
+            この時に「sourceにdoオペレータをかましてsubscribeに流す」というストリームが新規作成される</p>
+        <p>上記コードではsubscribeが2回呼ばれているから、ストリームが2本つくられることになる。</p>
+        <p>それを図にすると以下になる</p>
+        <pre>
+       ／→do→subscribe
+Subject
+       ＼→do→subscribe
+        </pre>
+        <p>onNext(1)時点ではストリームが1本存在し、onNext(2)時点ではストリームが2本存在するから、合計で3回流れることになる</p>
+        <p>このようにSubscribeした段階で値を流したり、ストリームを接続するタイプのObservableシーケンスの性質のことを"Cold"なObservableといいます(ある種の遅延評価と思うと理解しやすいのではないでしょうか)</p>
+        <p>逆に、Subjectのようにストリームが接続されて無くても値を流したり、ストリームの分岐になるObservableシーケンスの性質のことを"Hot"なObservableといいます(Cold/Hotという対立する文言だが、これらの性質は対立するものではない)</p>
+        
+        <h2>上記のstreamをdoの後で分岐させるには？</h2>
+        <p>publish/share/multicast等の"Hot"に変換するメソッドを使います</p>
+        
+<pre>
+var source = new Rx.Subject&lt;number&gt;();
+var stream = source.do(i => console.log("side effect")).share();//shareを追加
+    
+stream.subscribeOnNext(i => console.log("child1: " + i));
+source.onNext(1);
+stream.subscribeOnNext(i => console.log("child2: " + i));
+source.onNext(2);
+</pre>
+        <p>これにより、ストリームは以下の図になります</p>
+        <pre>
+                  ／→subscribe
+Subject→do→share
+                  ＼→subscribe
+        </pre>
+        
+        <h2>shareの実装について</h2>
+        <p>shareは内部でSubjectを持っており、誰かがshareの結果のobservableをsubscribeした時点で、1回だけsubscribeする動作になっています</p>
+        <p>これにより、shareより手前のストリームは1回しかsubscribeされず、side effectは2回しか実行されません</p>
+        <p>このshareが行っている内部でsubscribeを作動させて繋げることをCold→Hot変換といいます</p>
+        <p>この変換を任意のタイミング(connectの呼び出し)で出来るようにするのがpublishで、他の種類のSubjectでも出来るようにするのがmulticastになります</p>
+        
+        <h2>どれがColdでどれがHotなのか？</h2>
+        <p>基本的にSubjectとかfromEvent/等で作ったイベント系以外はColdと思ってください</p>
+        <p>また、AsyncSubjectみたいな両方の性質を持った変なのもいるので注意しましょう</p>
+        
+        <h2>実際のコードでの注意点</h2>
+        <p>複数subscribeする可能性のある箇所。特にObservableシーケンスの公開時に注意しましょう</p>
+        <p>基本的に複数subscribeする可能性のある場所は、Subject直とかを除き、share等を使ってHot変換しておくといいでしょう</p>
+
+    </div>
+    <footer class="modal-footer" style="margin-top:100px;">
+        <p>Rx勉強会</p>
+    </footer>
+
+</body>
+</html>

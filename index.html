@@ -1,75 +1,63 @@
-<!DOCTYPE html>
-<html>
+﻿<!DOCTYPE html>
 
-  <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="description" content="Learn rx : rx勉強用資料">
+<html lang="ja">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learn Reactive Extensions</title>
+    <link rel="stylesheet" href="Content/bootstrap-custom.min.css" type="text/css" />
+    <link rel="stylesheet" href="Content/bootstrap-theme.min.css" type="text/css" />
+    <link rel="stylesheet" href="app.css" type="text/css" />
+</head>
+    <body>
+        <div class="navbar navbar-default navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <div class="navbar-brand"><a href="/index.html">Reactive Extensions学習ノート</a></div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
 
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+            <div class="page-header" id="banner">
+                <div class="row">
+                    <div class="col-lg-8 col-md-7 col-sm-6">
+                        <h1>Reactive Extensions学習ノート</h1>
+                        <p class="lead">Rx勉強会</p>
+                    </div>
+                </div>
+            </div>
+            <h2>このページについて</h2>
+            <div>このページは様々な言語に移植されている強力なFRPライブラリ、Reactive Extensionsの学習用ノートです。</div>
+            <div>Reactive Extensionsの習得にあたって、実用的な逆引き、ノート的な資料として使えるように目指したページです。</div>
+            
+            <h2>目次</h2>
+            <ol>
+                <li>Reactive Extensionsとはなにか？
+                    <ul>
+                        <li><a href="whatis/dotnet.html">.NET/Unity開発者向け説明</a></li>
+                        <li><a href="whatis/non_dotnet.html">非.NET開発者向け説明</a></li>
+                    </ul>
+                </li>
+                <li><a href="when_use.html"> Reactive Extensionsを使うべき場所</a></li>
+                <li>Reactive Exteisions使い方
+                    <ol>
+                        <li><a href="convert_observable.html">Observableへの変換/Observableからの変換</a></li>
+                        <li><a href="operators.html">逆引きオペレータ一覧</a></li>
+                        <li><a href="cold_hot.html">Observableの分岐について、あるいはCold/Hotについて</a></li>
+                        <li><a href="with_object.html">FRP with オブジェクト指向他</a></li>
+                        <li><a href="when.html">whenの使い方(仮)</a></li>
+                    </ol>
+                </li>
+            </ol>
+        </div>
+        <div id="content"></div>
+        <footer class="modal-footer" style="margin-top:100px;">
+            <p>Rx勉強会</p>
+        </footer>
 
-    <title>Learn rx</title>
-  </head>
-
-  <body>
-
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="http://github.o-in.dwango.co.jp/Kazuki-Yasufuku/learn_rx">View on GitHub</a>
-
-          <h1 id="project_title">Learn rx</h1>
-          <h2 id="project_tagline">rx勉強用資料</h2>
-
-        </header>
-    </div>
-
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
-        <h3>
-<a name="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages"><span class="octicon octicon-link"></span></a>Welcome to GitHub Pages.</h3>
-
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
-
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
-</code></pre>
-
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
-
-<h3>
-<a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>Designer Templates</h3>
-
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
-
-<h3>
-<a name="rather-drive-stick" class="anchor" href="#rather-drive-stick"><span class="octicon octicon-link"></span></a>Rather Drive Stick?</h3>
-
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
-
-<h3>
-<a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
-
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (@defunkt), PJ Hyett (@pjhyett), and Tom Preston-Werner (@mojombo) founded GitHub.</p>
-
-<h3>
-<a name="support-or-contact" class="anchor" href="#support-or-contact"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
-
-<p>Having trouble with Pages? Check out the documentation at <a href="https://help.github.com/pages">https://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
-      </section>
-    </div>
-
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">Learn rx maintained by <a href="http://github.o-in.dwango.co.jp/Kazuki-Yasufuku">Kazuki-Yasufuku</a></p>
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
-      </footer>
-    </div>
-
-    
-
-  </body>
+        <script src="Scripts/jquery-1.9.0.min.js"></script>
+        <script src="Scripts/bootstrap.min.js"></script>
+</body>
 </html>

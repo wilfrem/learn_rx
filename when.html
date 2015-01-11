@@ -1,0 +1,66 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learn Reactive Extensions</title>
+    <link rel="stylesheet" href="Content/bootstrap-custom.min.css" type="text/css" />
+    <link rel="stylesheet" href="Content/bootstrap-theme.min.css" type="text/css" />
+    <link rel="stylesheet" href="app.css" type="text/css" />
+</head>
+<body>
+    <div class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <div class="navbar-brand"><a href="/index.html">Reactive Extensions学習ノート</a></div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+
+        <div class="page-header" id="banner">
+            <div class="row">
+                <div class="col-lg-8 col-md-7 col-sm-6">
+                    <h1>whenの使い方(仮)</h1>
+                    <p class="lead">Rx勉強会</p>
+                </div>
+            </div>
+        </div>
+        
+        <h2>whenの力</h2>
+        <p>whenは複数のPlanオブジェクトを受け取り、そのPlan通り、並列にメッセージを送出するObservableを作成するメソッドです</p>
+        <p>planは複数のObservableから生成することができるので、Observableの合成によって、とても複雑なObservableができます</p>
+        
+        <h3>Planの作り方</h3>
+        <p>Planは複数のObservableをandでつなげてPatternを生成し、thenDoでPlanへと変換します</p>
+        <p>Patternがメッセージを送出するタイミングを表し、thenDoでそれぞれのタイミングで送出するメッセージを選択することで、Planオブジェクトが出来上がるというわけです</p>
+        <p>例1</p>
+        <pre>
+var repeats = Rx.Observable.return("plan1").repeat(10);
+var timer = Rx.Observable.interval(1000);
+var pattern = repeats.and(timer);
+</pre>
+        <p>例1では"plan1"という文字列を10回送出するストリームと、1000msごとに送出するストリームをandしてPatternを作っています</p>
+        <p>andでつなぐと、２つのストリームの値が揃った時に流れ、片方が終了したら終了するというPatternになります。</p>
+        <p>つまり、repeatストリームは瞬時に10回で終了するストリームで、timerは1秒ごとに無限に流れるストリームのため、andでつなぐと、1秒ごとに10回流れて終了するPatternになります</p>
+        
+        <h3>PatternのPlanへの変換</h3>
+        <p>PatternはthenDoを使ってPlanへと変換します</p>
+        <p>thenDoはandでつないだ数分の複数の引数を受け取り、一つの値を返す関数を引数として与えます</p>
+        <p>例2</p>
+        <pre>
+var repeats = Rx.Observable.return("plan1").repeat(10);
+var timer = Rx.Observable.interval(1000);
+var pattern = repeats.and(timer);
+var plan = pattern.thenDo((x:string,y:number):string => x);
+</pre>
+        <p>例2はthenDoを使って、1秒ごとに10回plan1が流れて終了するPlanを作成している例です</p>
+        <p>これをwhenに入れるとObservableが出来上がります</p>
+    </div>
+    <footer class="modal-footer" style="margin-top:100px;">
+        <p>Rx勉強会</p>
+    </footer>
+
+</body>
+</html>

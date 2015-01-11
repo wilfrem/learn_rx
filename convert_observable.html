@@ -1,0 +1,96 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learn Reactive Extensions</title>
+    <link rel="stylesheet" href="Content/bootstrap-custom.min.css" type="text/css" />
+    <link rel="stylesheet" href="Content/bootstrap-theme.min.css" type="text/css" />
+    <link rel="stylesheet" href="app.css" type="text/css" />
+</head>
+<body>
+    <div class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <div class="navbar-brand"><a href="/index.html">Reactive Extensions学習ノート</a></div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+
+        <div class="page-header" id="banner">
+            <div class="row">
+                <div class="col-lg-8 col-md-7 col-sm-6">
+                    <h1>Observableからの変換/Observableへの変換</h1>
+                    <p class="lead">Rx勉強会</p>
+                </div>
+            </div>
+        </div>
+        <p>既存のイベントや非同期処理とRxを連携させるため、Observableに変換する機能が用意されている</p>
+        <p>これらの変換処理は言語やプラットフォームごと固有の物に合わせて作られているので、何からObservableに変換できるのかはドキュメントを参照してください。</p>
+        <p>ここでは有名どころを上げていきます</p>
+        
+        <h1>eventから変換するもの</h1>
+
+        <h2><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/fromevent.md">Rx.Observable.fromEvent(RxJS)</a></h2>
+        <p>DOMElementとイベント名を指定すると、指定したDOMの指定したイベントごとに発火するObservableを生成します。DOMElementはjQueryやAngular等で包まれていても良い</p>
+        
+        <h2><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/fromeventpattern.md">Rx.Observable.fromEventPattern(RxJS)</a></h2>
+        <p>fromEventでは対処できないようなタイプのイベント系処理をObservableに変換するときに使います。主にDOMイベント用やイベントlikeなコールバックに使用。</p>
+        
+        <h2><a href="http://msdn.microsoft.com/en-us/library/system.reactive.linq.observable.fromevent%28v=vs.103%29.aspx">Observable.FromEvent(Rx.NET)</a></h2>
+        <p>C#のevent構文をObservableに変換するときに使います。.NET 3.5以降のAction/Funcを使ったevent構文を変換するときに使います</p>
+        
+        <h2><a href="http://msdn.microsoft.com/en-us/library/system.reactive.linq.observable.fromeventpattern(v=vs.103).aspx">Observable.FromEventPattern(Rx.NET)</a></h2>
+        <p>C#のevent構文をObservableに変換するときに使います。.NET2以前の書き方の古いevent構文や、腐ったコードに蓋をするときに使います。</p>
+        
+        <h2>ViewObservable.click(RxAndroid)</h2>
+        <p>AndroidのActivityのclickイベントをObservableに変換するときに使います。<a href="http://qiita.com/amay077/items/9d169ff3493e827762bc">見つけた記事</a>には他にもtextという関数があるそうですが、ドキュメントが見当たらず。。。</p>
+        
+        <p>同様の機能はReactiveCocoa(Obj-C向け)にもあります。</p>
+        
+        <h1>Futureからの変換</h1>
+        <h2><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/frompromise.md">Rx.Observable.fromPromise(RxJS)</a></h2>
+        <p>JSのPromiseをObservableに変換します</p>
+        
+        <h2><a href="http://msdn.microsoft.com/ja-jp/library/dn627944%28v=vs.110%29.aspx">Task.ToObservable(Rx.NET)</a></h2>
+        <p>.NETのTaskをObservableに変換します。ToTaskを使ってTaskに戻すことも出来ます</p>
+        
+        <h2><a href="http://msdn.microsoft.com/ja-jp/library/dn627944%28v=vs.110%29.aspx">Observable.from(Future)(RxJava)</a></h2>
+        <p>JavaのFutureをObservableに変換します。BlockingObservableからtoFutureを使ってFutureに変換することもできます。</p>
+        
+        <h1>その他色々な物からの変換・生成</h1>
+        <h2><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/create.md">Observable.Create(Rx.NET/RxJS/RxJava)</a></h2>
+        <p>比較的汎用なObservable生成メソッド。ただし、このObservableはcoldなのでeventで使うときには若干注意</p>
+
+        <h2><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/fromcallback.md">Rx.Observable.fromCallback(RxJS)</a></h2>
+        <p>最後の引数が結果のcallbackの関数を渡すと、結果をObservableで返すような関数にwrapしてくれます。node.js向けにfromNodeJSCallbackもあります</p>
+        <p>なお、イベント的な使い方をしているコールバックはfromEventPatternを使いましょう</p>
+        
+        <h2><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/from.md">Rx.Observable.from(RxJS)</a>他多数</h2>
+        <p>イテレータや配列をObservableに変換します。変換されたObservableは配列を一つ返して終了するcoldなOservableになります。</p>
+        <p>同様の値や配列をObservableに変えるメソッドはfrom/just(RxJava)等であります</p>
+        
+        <h2><a href="https://github.com/neuecc/UniRx">Observable.FromCoroutine(UniRx)</a></h2>
+        <p>UnityのコルーチンをObservableに変換します</p>
+        
+        <h2><a href="https://github.com/neuecc/UniRx">Observable.EveryUpdate(UniRx)</a></h2>
+        <p>Unityの毎フレームのUpdate時に呼び出されるObservableを作成します。</p>
+        
+        <h1>Subjectを使った生成</h1>
+        <p>Subjectは上記のパターン以外のObservableの生成や、新規クラスでイベント発生の内部用実装で使用します</p>
+        <p>SubjectはObservableの具象クラスであり、更にObserverの具象クラスでもあるので、<code>Subject.OnNext</code>をコールすると、SubjectがObservableとして発火する仕組みになっています</p>
+        <p>Subjectにはいくつかの派生があり、ReplaySubjectやAsyncSubjectが挙げられます。用途に合わせて使用するクラスを変えましょう</p>
+        
+        <p>参考資料</p>
+        <ul>
+            <li><a href="https://github.com/Reactive-Extensions/RxJS/tree/master/doc#how-do-i">RxJSのHow Do Iの章。createを使ったパターンが書かれている</a></li>
+        </ul>
+    </div>
+    <footer class="modal-footer" style="margin-top:100px;">
+        <p>Rx勉強会</p>
+    </footer>
+
+</body>
+</html>

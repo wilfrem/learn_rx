@@ -1,0 +1,65 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learn Reactive Extensions</title>
+    <link rel="stylesheet" href="../Content/bootstrap-custom.min.css" type="text/css" />
+    <link rel="stylesheet" href="../Content/bootstrap-theme.min.css" type="text/css" />
+    <link rel="stylesheet" href="../app.css" type="text/css" />
+</head>
+<body>
+    <div class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <div class="navbar-brand"><a href="/index.html">Reactive Extensions学習ノート</a></div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+
+        <div class="page-header" id="banner">
+            <div class="row">
+                <div class="col-lg-8 col-md-7 col-sm-6">
+                    <h1>非.NET向け説明</h1>
+                    <p class="lead">Rx勉強会</p>
+                </div>
+            </div>
+        </div>
+
+        <h2>各種参考になる資料</h2>
+        <ul>
+            <li><a href="http://ninjinkun.hatenablog.com/entry/introrxja">【翻訳】あなたが求めていたリアクティブプログラミング入門</a></li>
+            <li><a href="http://reactivex.io/intro.html">ReactiveXのIntro</a></li>
+            <li><a href="https://github.com/ReactiveX/RxJava/wiki">RxJavaのWiki</a></li>
+        </ul>
+        
+        <h2>非.NETプログラマーにとってRxとは何なのか</h2>
+        <div>
+            Rxとは、一言で言えば「関数型リアクティブプログラミングを実現する強力なライブラリ」である。<br />
+            でも、これだと意味が分からないのでもうちょっと解説する<br />
+        </div>
+        <div>
+            Rxは分かりやすく言えばPromise++であり、callback++である。<br />
+            PromiseもcallbackもすべてObservableであり、すべて時間軸上のStreamで表される。<br />
+            Streamで表されるということは、filter/mapや合成等の関数型言語由来の機能で操作可能ということでもある。(モナド！)<br />
+        </div>
+        <div>
+            以上の利点は最終的に、時間軸上の処理に関わる複雑なドメインロジックを簡素に表現できるということに繋がる。(どう処理するのかではなく、何をしたいのかを書くことになるから)<br />
+            これは、複雑な仕様を分かりやすく、短く、簡素にコーディングすることが可能であることを表す<br />
+        </div>
+        <h2>重要なポイント</h2>
+        <ul>
+            <li>RxはPromise++であり、callback++である</li>
+            <li>RxはPromiseやcallbackを時間軸上のStream(Observable)で表す。</li>
+            <li>Streamで表すことによって、filter/map等の関数型言語由来の機能で扱え、最終的にどう処理するかではなく、何をしたいのかを書くことになる</li>
+            <li>時間軸が関連する複雑なドメインを簡潔にコードで表現できる</li>
+        </ul>
+    </div>
+    <footer class="modal-footer" style="margin-top:100px;">
+        <p>Rx勉強会</p>
+    </footer>
+
+</body>
+</html>

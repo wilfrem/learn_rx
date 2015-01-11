@@ -1,0 +1,231 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learn Reactive Extensions</title>
+    <link rel="stylesheet" href="Content/bootstrap-custom.min.css" type="text/css" />
+    <link rel="stylesheet" href="Content/bootstrap-theme.min.css" type="text/css" />
+    <link rel="stylesheet" href="app.css" type="text/css" />
+</head>
+<body>
+    <div class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <div class="navbar-brand"><a href="/index.html">Reactive Extensions学習ノート</a></div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+
+        <div class="page-header" id="banner">
+            <div class="row">
+                <div class="col-lg-8 col-md-7 col-sm-6">
+                    <h1>Rx逆引き</h1>
+                    <p class="lead">Rx勉強会</p>
+                </div>
+            </div>
+        </div>
+
+        <p>RxのObservableに関するオペレータやその他もろもろに関する逆引きです。</p>
+        <p>基本的にRxJS+αなので、各実装でどういう名前になっているかはドキュメントを参照してください</p>
+        <p>メモ: メッセージ=ストリームから飛んでくる値のこと。イベント=メッセージが飛んでくる+onComplete/onError。ストリーム=Observable。RxJSはPromiseもそのままストリームとして扱えることが多い。</p>
+        <h2>Observableのオペレータ</h2>
+        
+        <h3>生成</h3>
+        <table class="table table-striped">
+            <thead><tr><th>したいこと</th><th>オペレータ名</th><th>備考</th></tr></thead>
+            <tbody>
+                <tr><td>ストリームをSubscribe時の動作から作成する</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/create.md">create</a></td><td></td></tr>
+                <tr><td>ストリームをfor文っぽい形で生成する</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/generate.md">generate</a></td><td></td></tr>
+                <tr><td>指定した値を返すだけのストリームを作成する</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/return.md">return/just</a></td><td></td></tr>
+                <tr><td>指定した値を繰り返すストリームを作成する</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/repeat.md">repeat</a></td><td></td></tr>
+                <tr><td>例外を投げるストリームを作成する</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/throw.md">throw</a></td><td></td></tr>
+                <tr><td>空のストリームを作成する</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/empty.md">empty</a></td><td>onCompleteだけ飛んでくる</td></tr>
+                <tr><td>何も流れてこないストリームを作成する</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/never.md">never</a></td><td>こちらはonCompleteも飛んでこない</td></tr>
+                <tr><td>DOM要素のイベントからストリームを作成する</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/fromevent.md">fromEvent</a></td><td>Hot Observable</td></tr>
+                <tr><td>fromEventでは扱えないイベントをストリームに変換する</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/fromeventpattern.md">fromEventPattern</a></td><td>Hot Observable</td></tr>
+                <tr><td>ES6のPromiseからストリームに変換する</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/frompromise.md">fromPromise</a></td><td></td></tr>
+                <tr><td>イテレータからストリームに変換する</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/from.md">from</a></td><td></td></tr>
+                <tr><td>mapからストリームに変換する</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/pairs.md">pairs</a></td><td></td></tr>
+                <tr><td>各要素がObservable/Promiseなイテレータからストリームに変換する</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/for.md">for</a></td><td></td></tr>
+                <tr><td>連続した数字のストリームを作成する</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/range.md">range</a></td><td></td></tr>
+                <tr><td>引数に入れた値をそのままストリームにしたい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/of.md">of</a></td><td></td></tr>
+                <tr><td>一定間隔ごとにメッセージを発信するストリームを作成する</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/interval.md">interval</a></td><td></td></tr>
+                <tr><td>一定時間後に一定間隔でメッセージを発信するストリームを作成する</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/timer.md">timer</a></td><td></td></tr>
+                <tr><td>ある関数を非同期で実行して、結果をストリームにしたい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/start.md">start</a></td><td>同期メソッドを非同期に実行するのに使える。変換する場合はtoAsyncを使用</td></tr>
+                <tr><td>Promiseを返す非同期関数を実行して、結果をストリームにしたい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/startasync.md">startAsync</a></td><td></td></tr>
+                <tr><td>同期関数を非同期関数に変換したい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/toasync.md">toAsync</a></td><td>Observableを返す関数に変換される。そのまま実行する場合はstartを使用</td></tr>
+                <tr><td>結果をコールバックするタイプの非同期関数をストリームに変換したい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/fromcallback.md">fromCallback</a></td><td></td></tr>
+                <tr><td>Node.jsタイプの結果をコールバックするタイプの非同期関数をストリームに変換したい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/fromnodecallback.md">fromNodeCallback</a></td><td></td></tr>
+                <tr><td>とても複雑なObservableシーケンスの合成/作成がしたい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/when.md">when</a>及びand及びthen</td><td></td></tr>
+                <tr><td>それ以外の独自方法でシーケンスを作りたい</td><td>Subjectのどれかを使用</td><td></td></tr>
+            </tbody>
+        </table>
+        
+
+        <h3>メッセージの変換</h3>
+        <table class="table table-striped">
+            <thead><tr><th>したいこと</th><th>オペレータ名</th><th>備考</th></tr></thead>
+            <tbody>
+                <tr><td>メッセージを変えたい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/select.md">map/select</a></td><td>歴史的経緯により、LINQがある言語はselect、無い言語はmapとなる</td></tr>
+                <tr><td>メッセージの特定のプロパティの値が欲しい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/pluck.md">pluck</a></td><td>C#/Javaには無い。動的言語ならでは</td></tr>
+                <tr><td>ストリームのイベントのメタ情報をメッセージに付与したい/onComplete/onErrorもメッセージ化したい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/0d7d0894de12d0f6ade0421609ae237ef11f3470/src/core/linq/observable/materialize.js">materialize</a></td><td></td></tr>
+                <tr><td>メッセージに前回メッセージからの経過時間を付与したい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/timeinterval.md">timeInterval</a></td><td></td></tr>
+                <tr><td>メッセージにタイムスタンプを付与したい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/timestamp.md">timeStamp</a></td><td></td></tr>
+                <tr><td>メッセージ中のストリームを並列に展開したい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/selectmany.md">selectMany/flatMap</a></td><td>RxJavaの<a href="http://reactivex.io/RxJava/javadoc/rx/Observable.html#flatMap(rx.functions.Func1)">javadoc</a>が分かりやすい</td></tr>
+                <tr><td>メッセージ中のストリームを直列に展開したい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/concatmap.md">selectConcat/concatMap</a></td><td>RxJavaの<a href="http://reactivex.io/RxJava/javadoc/rx/Observable.html#concatMap(rx.functions.Func1)">javadoc</a>が分かりやすい</td></tr>
+                <tr><td>メッセージ中のストリームを並列に展開するが、新しいストリームから値が来たら古いストリームを無視したい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/flatmaplatest.md">selectSwitch/switchMap</a></td><td>RxJavaの<a href="http://reactivex.io/RxJava/javadoc/rx/Observable.html#switchMap(rx.functions.Func1)">javadoc</a>が分かりやすい</td></tr>
+                <tr><td>メッセージごとにストリームを引き延ばしたい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/expand.md">expand</a></td><td></td></tr>
+
+            </tbody>
+        </table>
+
+        <h3>フィルタ・カット</h3>
+        <table class="table table-striped">
+            <thead><tr><th>したいこと</th><th>オペレータ名</th><th>備考</th></tr></thead>
+            <tbody>
+                <tr><td>ストリームを条件式でフィルタしたい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/where.md">filter/where</a></td><td>歴史的経緯により、LINQがある言語はwhere、無い言語はfilterとなる</td></tr>
+                <tr><td>ストリームを先頭から指定した件数までで切りたい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/take.md">take</a></td><td></td></tr>
+                <tr><td>ストリームを先頭から条件式が成立しなくなるまでで切りたい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/takewhile.md">takeWhile</a></td><td></td></tr>
+                <tr><td>ストリームを先頭から他のストリームから値が来るまでで切りたい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/takeuntil.md">takeUntil</a></td><td></td></tr>
+                <tr><td>ストリームを最後から指定した件数までにしたい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/takelast.md">takeLast</a></td><td>最後はOnCompleteが無いと決まらないことに注意。</td></tr>
+                <tr><td>ストリームのonComplete/onErrorだけを通したい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/ignoreelements.md">ignoreelements</a></td><td></td></tr>
+                <tr><td>ストリームを指定した件数まで飛ばしたい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/skip.md">skip</a></td><td></td></tr>
+                <tr><td>ストリームを条件式が成立するまで飛ばしたい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/skipwhile.md">skipWhile</a></td><td></td></tr>
+                <tr><td>ストリームを他のストリームから値が来るまで飛ばしたい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/skipuntil.md">skipUntil</a></td><td></td></tr>
+                <tr><td>ストリームを最後から指定した件数を飛ばしたい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/skiplast.md">skipLast</a></td><td></td></tr>
+                <tr><td>メッセージが変わった時だけメッセージを通したい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/distinctuntilchanged.md">distinctUntilChanged</a></td><td></td></tr>
+                <tr><td>メッセージが高頻度で飛びすぎなのを削りたい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/debounce.md">throttle/debounce</a></td><td>throttleは言語によってはdeprecatedなので注意</td></tr>
+                <tr><td>メッセージを最初の一つだけ通したい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/single.md">single</a>/<a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/first.md">first</a></td><td>メッセージが無い時はエラーとなる。singleは２つ以上来た時もはerrorとなる</td></tr>
+                <tr><td>メッセージを最初一つだけ、無い場合は特定の値を通したい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/singleordefault.md">singleOrDefault</a>/<a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/firstordefault.md">firstOrDefault</a></td><td>silgleOrDefaultは2つ以上来た時はerrorとなる</td></tr>
+                <tr><td>メッセージを最後の一つだけ通したい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/last.md">last</a></td><td>メッセージが無い時はエラーとなる</td></tr>
+                <tr><td>メッセージを最後一つだけ、無い場合は特定の値を通したい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/lastordefault.md">lastOrDefault</a></td><td></td></tr>
+                <tr><td>メッセージを一定間隔で削りたい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/sample.md">sample/throttleLast</a></td><td>throttleと似た機能</td></tr>
+
+            </tbody>
+        </table>
+        
+        <h3>時間や前後</h3>
+        <table class="table table-striped">
+            <thead><tr><th>したいこと</th><th>オペレータ名</th><th>備考</th></tr></thead>
+            <tbody>
+                <tr><td>ストリームにタイムアウトを指定したい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/timeout.md">timeout</a></td><td>timeout時にerrorにするか、別のストリームにするかを選べる</td></tr>
+                <tr><td>ストリームを遅延させたい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/delay.md">delay</a>/<a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/delaywithselector.md">delayWithSelector</a></td><td></td></tr>
+                <tr><td>メッセージを前後で束ねて配列にして、新たなメッセージにしたい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/buffer.md">buffer</a></td><td>RxJSは条件の型に合わせてbufferWithCount/bufferWithTime等のメソッドを用意している</td></tr>
+                <tr><td>メッセージを前後で束ねてObservableにして、新たなメッセージにしたい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/window.md">window</a></td><td>RxJSは条件の型に合わせてwindowWithCount/windowWithTime等のメソッドを用意している</td></tr>
+                <tr><td>ストリームを特定の間隔ごとにグループ分けしたい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/groupbyuntil.md">groupByUntil</a></td><td></td></tr>
+
+            </tbody>
+        </table>
+
+        <h3>ストリームの分岐・合成</h3>
+        <table class="table table-striped">
+            <thead><tr><th>したいこと</th><th>オペレータ名</th><th>備考</th></tr></thead>
+            <tbody>
+                <tr><td>複数のストリームの最後のメッセージを新たなストリームにしたい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/forkjoin.md">forkJoin</a></td><td></td></tr>
+                <tr><td>ストリームを分岐したい/複数Subscribeしたい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/publish.md">publish</a>/<a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/share.md">share</a></td><td>Hot変換。shareはSubscribeされた時に自動でconnectする</td></tr>
+                <tr><td>ストリームを分岐したいが、その時に好きなSubjectを使いたい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/multicast.md">multicast</a></td><td>Hot変換</td></tr>
+                <tr><td>ストリームを分岐し、分岐先には直前の値を返したい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/publishlast.md">publishLast</a>/shareLast</td><td>Hot変換だが、cold的要素あり。内部的にはAsyncSubjectをmulticastしたのと同じ</td></tr>
+                <tr><td>ストリームを分岐し、分岐先にはsubscribe時に初期値を与えたい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/publishvalue.md">publishValue</a>/shareValue</td><td>Hot変換</td></tr>
+                <tr><td>ストリームを分岐&amp;キャッシュしたい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/replay.md">replay</a>/shareReplay</td><td>Hot変換だが、cold的要素あり。内部的にはReplaySubjectをmulticastしたのと同じ</td></tr>
+                <tr><td>複数のストリームのうち、一番速くメッセージが来たストリームを選択したい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/ambproto.md">amb</a></td><td>1番速くメッセージが来たストリームのメッセージが流れ続ける</td></tr>
+                <tr><td>複数のストリームに同じメッセージが飛んできているかを判定したい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/sequenceequal.md">sequenceEqual</a></td><td></td></tr>
+                <tr><td>複数のストリームのうち、どれか一つにメッセージが来たら、他のストリームの直前のメッセージと合わせて流したい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/combinelatestproto.md">combineLatest</a></td><td></td></tr>
+                <tr><td>複数のストリームのうち、すべてに一つメッセージが来たら、合わせて流したい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/zipproto.md">zip</a></td><td></td></tr>
+                <tr><td>複数のストリームのうち、メッセージ同士のタイミングのズレが一定以内なら、合わせて流したい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/join.md">join</a>/<a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/groupjoin.md">gropuJoin</a></td><td></td></tr>
+                <tr><td>複数のストリームをそのままmergeしたい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/mergeproto.md">merge</a></td><td></td></tr>
+                <tr><td>終了時に次のストリームを繋げたい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/concatproto.md">concat</a></td><td></td></tr>
+            </tbody>
+        </table>
+        
+        <h3>ストリーム全体への処理</h3>
+        <table class="table table-striped">
+            <thead><tr><th>したいこと</th><th>オペレータ名</th><th>備考</th></tr></thead>
+            <tbody>
+                <tr><td>メッセージの合計/平均が取りたい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/sum.md">sum</a>/<a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/average.md">average</a></td><td></td></tr>
+                <tr><td>メッセージ全体に対して何らかの計算をして、一つの結果値を得たい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/reduce.md">aggregate/reduce</a></td><td>sumやaverage的なことを自作する時に使用。aggregateは言語によってはdeprecated</td></tr>
+                <tr><td>メッセージと前回の結果とで何らかの計算をして次のストリームに流したい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/scan.md">scan</a></td><td>windowやthrottle的なことを自作する時に使用。</td></tr>
+                <tr><td>ストリームに含まれるメッセージ数を数えたい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/count.md">count</a></td><td></td></tr>
+                <tr><td>ストリームに特定のメッセージが含まれているかを調べたい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/src/core/linq/observable/contains.js">contains</a></td><td></td></tr>
+                <tr><td>ストリームにメッセージが1つ以上含まれているかを調べたい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/any.md">any/some</a></td><td>条件式を入れることもできる</td></tr>
+                <tr><td>ストリームのすべてのメッセージが条件式に適合するかを調べたい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/every.md">all/every</a></td><td></td></tr>
+                <tr><td>ストリーム全体を配列/mapに変換したい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/tomap.md">toMap</a>他</td><td>toArray/ToDictionary(C#)/ToList/toSet等々。</td></tr>
+                <tr><td>ストリーム全体をキーごとにグループ分けしたい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/groupby.md">groupBy</a></td><td></td></tr>
+
+            </tbody>
+        </table>
+
+        <h3>非同期</h3>
+        <table class="table table-striped">
+            <thead><tr><th>したいこと</th><th>オペレータ名</th><th>備考</th></tr></thead>
+            <tbody>
+                <tr><td>subscribe時の処理を特定のタイミングやスレッドで行いたい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/subscribeon.md">subscribeOn</a></td><td></td></tr>
+                <tr><td>ストリームを特定のスレッドに切り替えたい/非同期で行いたい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/observeon.md">observeOn</a></td><td></td></tr>
+                <tr><td>ある関数を非同期で実行して、結果をストリームにしたい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/start.md">start</a></td><td>同期メソッドを非同期に実行するのに使える。変換する場合はtoAsyncを使用</td></tr>
+                <tr><td>Promiseを返す非同期関数を実行して、結果をストリームにしたい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/startasync.md">startAsync</a></td><td></td></tr>
+                <tr><td>同期関数を非同期関数に変換したい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/toasync.md">toAsync</a></td><td>Observableを返す関数に変換される。そのまま実行する場合はstartを使用</td></tr>
+                <tr><td>結果をコールバックするタイプの非同期関数をストリームに変換したい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/fromcallback.md">fromCallback</a></td><td></td></tr>
+                <tr><td>Node.jsタイプの結果をコールバックするタイプの非同期関数をストリームに変換したい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/fromnodecallback.md">fromNodeCallback</a></td><td></td></tr>
+            </tbody>
+        </table>
+        
+        <h3>遅延評価</h3>
+        <table class="table table-striped">
+            <thead><tr><th>したいこと</th><th>オペレータ名</th><th>備考</th></tr></thead>
+            <tbody>
+                <tr><td>Subscribe時にストリームを2つから1つ選択したい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/if.md">if/ifThen</a></td><td>ifThenはIE8用</td></tr>
+                <tr><td>Subscribe時に多数のストリームから1つ選択したい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/case.md">case/switchCase</a></td><td>switchCaseはIE8用</td></tr>
+                <tr><td>Observable作成をSubscribe時まで遅延させたい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/defer.md">defer</a></td><td></td></tr>
+                <tr><td>Observable作成をSubscribe時まで遅延させ、シーケンスにリソースを紐付けたい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/using.md">using</a></td><td>リソースはシーケンス終了後、リソース.dispose()が呼び出される</td></tr>
+            </tbody>
+        </table>
+        
+        <h3>その他</h3>
+        <table class="table table-striped">
+            <thead><tr><th>したいこと</th><th>オペレータ名</th><th>備考</th></tr></thead>
+            <tbody>
+                <tr><td>ストリームには影響をあたえないで何か処理したい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/do.md">do/tap</a></td><td>派生でdoOnError等がある</td></tr>
+                <tr><td>メソッドチェーンを壊さずに複雑な処理をしたい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/let.md">let</a></td><td>これ需要あるのかなぁ？</td></tr>
+                <tr><td>エラー時に再度subscribeしたい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/retry.md">retry</a></td><td></td></tr>
+                <tr><td>エラー時にエラーに対処したい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/catchproto.md">catch</a></td><td></td></tr>
+                <tr><td>エラー時に次のストリームを繋げたい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/onerrorresumenextproto.md">onErrorResumeNext</a></td><td></td></tr>
+                <tr><td>終了時に再度subscribeしたい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/repeatproto.md">repeat</a></td><td></td></tr>
+                <tr><td>終了またはエラー時に何かしたい</td><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/finally.md">finally</a></td><td></td></tr>
+
+            </tbody>
+        </table>
+
+        <h2>オペレータ以外のRxの要素</h2>
+        <h3>Subject一覧</h3>
+        <table class="table table-striped">
+            <thead><tr><th>名前</th><th>機能</th><th>備考</th></tr></thead>
+            <tbody>
+                <tr><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/subjects/subject.md">Subject</a></td><td>基本的なSubject。Hotなobservableで、onNext/onComplete/onErrorをそのままsubscribeしているObserverに伝える</td><td></td></tr>
+                <tr><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/subjects/replaysubject.md">ReplaySubject</a></td><td>Subjectの派生。違う点はメッセージをすべてキャッシュし、新たにsubscribeした時にキャッシュしたメッセージをすべて再送する</td><td></td></tr>
+                <tr><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/subjects/behaviorsubject.md">BehaviorSubject</a></td><td>Subjectの派生。初期値を持ち、違う値がメッセージとして来た時にその値をキャッシュしてメッセージを流す。Subscribe時に直近の値か初期値を再送する</td><td></td></tr>
+                <tr><td><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/subjects/asyncsubject.md">AsyncSubject</a></td><td>Promise的動きをするSubject。最後のメッセージをキャッシュし、onCompleteが呼び出された時にメッセージを放出してonCompleteを送出する。</td><td></td>onComplete後にSubscribeした場合もメッセージとonCompleteが送られてくる</tr>
+            </tbody>
+        </table>
+               
+        <h3>その他</h3>
+        <table class="table table-striped">
+            <thead><tr><th>したいこと</th><th>解決法</th></thead>
+            <tbody>
+                <tr><td>ストリームで飛ばす値が無い/voidを飛ばしたい</td><td>Unitを飛ばすようにする。Unitの実装が無い言語(RxJS)もあるので、その場合はUnitを実装する</td></tr>
+                <tr><td>.NET3.5以降のeventからストリームを作成する(Rx.NET)</td><td>fromEventを使用する</td></tr>
+                <tr><td>Taskからストリームを作成する(Rx.NET)</td><td>Task.ToObservableを使用する</td></tr>
+                <tr><td>Futureからストリームを作成する(RxJava)</td><td>Observable.fromを使用する</td></tr>
+                <tr><td>毎フレームのUpdateと同等のストリームを作成する(UniRx)</td><td>Observable.EveryUpdateを使用する</td></tr>
+                <tr><td></td><td></td></tr>
+            </tbody>
+        </table>
+
+    </div>
+    <footer class="modal-footer" style="margin-top:100px;">
+        <p>Rx勉強会</p>
+    </footer>
+
+</body>
+</html>

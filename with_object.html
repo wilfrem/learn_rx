@@ -1,0 +1,64 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learn Reactive Extensions</title>
+    <link rel="stylesheet" href="Content/bootstrap-custom.min.css" type="text/css" />
+    <link rel="stylesheet" href="Content/bootstrap-theme.min.css" type="text/css" />
+    <link rel="stylesheet" href="app.css" type="text/css" />
+</head>
+<body>
+    <div class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <div class="navbar-brand"><a href="/index.html">Reactive Extensions学習ノート</a></div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+
+        <div class="page-header" id="banner">
+            <div class="row">
+                <div class="col-lg-8 col-md-7 col-sm-6">
+                    <h1>FRP with オブジェクト指向他</h1>
+                    <p class="lead">Rx勉強会</p>
+                </div>
+            </div>
+        </div>
+        
+        <h2>Rxをオブジェクト中でどう使うか？</h2>
+        <p>今までのオブジェクト指向の書き方と変わらないと思う</p>
+        <p>SOLID原則がRxで変わることはない。むしろSOLID原則に従い、このクラスの責務は何なのか？という点を意識したら書きやすくなると思う</p>
+        
+        <h2>オブジェクトの外にはRxの何を公開すべきか？</h2>
+        <p>Observable! TypeScriptならばObservableインターフェイスが定義されている。.NETならばIObservableインターフェイスを公開する。JavaはObservabeオブジェクトを公開する</p>
+        <p>ドメインロジックに従い(何かのストリームを公開するという責務がそのクラスにあるはず！)、ストリームを作成し、その作成したストリームを公開するべし</p>
+        <p>.NETのeventの使い方は参考になると思う。あれは元々callback++として開発され、Rx導入したらそのままIObservableに置き換えられる言語機能である。</p>
+        
+        <h2>クラス内に状態マシンをなるべく作らないようにしよう</h2>
+        <p>Rxのオペレータは強力だから、状態マシンは基本要らないハズである</p>
+        <p>Doを使って副作用を起こしていたり、Subjectを多用して複雑になっていたら、オペレータをちゃんと使えてないか、何かを間違えている</p>
+        
+        <h2>Observable VS Task/Future</h2>
+        <p>Task/Futureは単一の値を返す非同期処理に使う物であり、Observableは複数の値を返し、編集可能なイベントストリームである。よって用途が微妙に違う</p>
+        <p>.NET/Javaは相互変換可能なので、どちらを使うべきかを考慮して使うのが良いと思う。(戻り値としてはFutureだが、内部ではObservableを使う等)</p>
+        <p>C#にはasync/awaitがあるし、次期C++/JSにもasync/await構文が入る噂があるから、言語の状況に応じて上手く使いましょう。</p>
+        
+        <h2>(今のところ自分が考える)理想的なRxの使い方</h2>
+        <ul>
+            <li>実装するクラスの責務に従いつつ、コンストラクタでRxのストリームを組み立ててしまう</li>
+            <li>ストリームの結果を公開する必要があれば、Observableとして公開する</li>
+            <li>他のクラスのストリームを参照したければ、コンストラクタ引数で要求する。コンストラクタ引数の解決は適切なDIコンテナを使用する</li>
+            <li>ストリームの操作は基本的にオペレータを使用する。</li>
+            <li>オペレータで出来ないストリーム操作が必要になったらオペレータを自作する。</li>
+            <li>Doは基本デバッグ用途で、悪手。コードを見なおしたほうが良い</li>
+        </ul>
+    </div>
+    <footer class="modal-footer" style="margin-top:100px;">
+        <p>Rx勉強会</p>
+    </footer>
+
+</body>
+</html>
